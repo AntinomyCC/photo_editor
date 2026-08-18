@@ -2,32 +2,38 @@ import numpy as np
 import skimage as ski
 import tkinter as tk
 from tkinter import filedialog
+from matplotlib import pyplot as plt
 
-class data_function:
+def photo_path():
+    root = tk.Tk()
+    root.withdraw()
+    path = filedialog.askopenfilename() 
+    return path
 
-    def photo_path(): # read the path of the photo
-        root = tk.Tk()
-        root.withdraw()
-        path = filedialog.askopenfilename()
-        return path
+class Photo:
+    def __init__(self, path):
+        self.path = path
+        self.photo_rgb = None
+        self.photo_hsl = None
 
-    def format_converter(path): # convert the format form HEIC to PNG(if need)
+    def photo_read(self):
+        photo_rgb = ski.io.imread(self.path)
+        self.photo_rgb = photo_rgb
+    
+    def photo_read_HEIC(self):
         pass
 
-    def photo_array_convert(path): # convert png/jepg photos to numpy array
-        photo = ski.io.imread(path)
-        return photo #return photo as an arraylist
-
-
-class analysis_function:
-
-    def RGB_to_HSL(photo):
-        red_channel = photo[:,:,0].astype(float)/255
-        green_channel =photo[:,:,1].astype(float)/255
-        blue_channel = photo[:,:,2].astype(float)/255
+    def convert_photo_to_hsl(self):
+        if self.photo_rgb is None:
+            self.photo_read()
+            
+        photo_rgb = self.photo_rgb
+        red_channel = photo_rgb[:,:,0].astype(float)/255
+        green_channel =photo_rgb[:,:,1].astype(float)/255
+        blue_channel = photo_rgb[:,:,2].astype(float)/255 
 
         (pixels_vertical, pixels_horizontal)= red_channel.shape
-        photo_HSL = np.zeros((pixels_vertical,pixels_horizontal,3)) # allocate the room for the converted photo.
+        photo_hsl = np.zeros((pixels_vertical,pixels_horizontal,3)) # allocate the room for the converted photo. 
 
         for i in range(0,pixels_vertical):
             for j in range(0,pixels_horizontal):
@@ -37,7 +43,7 @@ class analysis_function:
 
                 delta = max - min
                 L = (min + max) /2
-                photo_HSL[i,j,2] = L
+                photo_hsl[i,j,2] = L
                 if delta == 0:
                     H = 0
                 elif idxmax == 0:
@@ -47,7 +53,7 @@ class analysis_function:
                 elif idxmax == 2:
                     H = 60 * ((red_channel[i,j] - green_channel[i,j]) / delta + 4)
 
-                photo_HSL[i,j,0] = H 
+                photo_hsl[i,j,0] = H 
 
                 if delta == 0:
                     S = 0
@@ -56,11 +62,10 @@ class analysis_function:
                 else:
                     S = delta/(2 - max - min)
 
-                photo_HSL[i,j,1] = S
-
-        return photo_HSL
-
-    def saturation_tuner(photo_HSL):
+                photo_hsl[i,j,1] = S
+                self.photo_hsl = photo_hsl
+            
+    def saturation_tuner(self):
         pass
 
 class widgets:
@@ -69,11 +74,12 @@ class widgets:
 
 
 def main():
+    path = photo_path()
+    photo = Photo(path)
+    photo.photo_read()
+    photo.convert_photo_to_hsl()
+    plt.imshow(photo.photo_hsl)
+    plt.show()
 
-    photo = data_function.photo_path()
-    photo_array = data_function.photo_array_convert(photo)
-    photo_HSL = analysis_function.RGB_to_HSL(photo_array)
-    #print(photo_HSL)
-    photo_saturation_adjusted = analysis_function.saturation_tuner(photo_HSL)
-    
-main()
+if __name__ == "__main__":
+    main()  
