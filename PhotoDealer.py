@@ -12,7 +12,7 @@ def photo_path():
     return path
 
 def saturation_tuner(s_channel, t):
-    return s_channel**np.exp(t)
+    return s_channel**np.exp(-t)
 
 def hsl_to_rgb(photo_hsl):
     photo_rgb_output = np.zeros(photo_hsl.shape)
