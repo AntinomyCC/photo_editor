@@ -1,4 +1,4 @@
-from PhotoDealer import Photo, photo_path
+from photo_editor.photo import Photo
 import numpy as np
 import pytest
 def test_rgb_hsl_rgb_convert():
@@ -11,8 +11,7 @@ def test_rgb_hsl_rgb_convert():
 
     all_rgb_array = np.stack([r, g, b], axis=-1).reshape(4096, 4096, 3)
 
-    path = "test path"
-    photo = Photo(path)
+    photo = Photo.photo_read()
     photo.photo_rgb = all_rgb_array
     photo.rgb_to_hsl()
     photo.hsl_to_rgb()

@@ -1,5 +1,5 @@
 import numpy as np
-from PhotoDealer import saturation_tuner
+from photo_editor.color_functions import saturation_tuner
 import pytest
 
 def test_saturation_exact():

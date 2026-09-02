@@ -1,5 +1,5 @@
-from PhotoDealer import Photo
-from PhotoDealer import photo_path
+from photo_editor.photo import Photo
+from photo_editor.io_functions import photo_path
 import pytest
 import numpy as np
 
