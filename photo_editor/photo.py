@@ -37,7 +37,8 @@ class Photo:
         self.photo_s_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],t)
 
 def main():
-    photo = Photo.photo_read()
+    photo = Photo()
+    photo.photo_read()
     photo.rgb_to_hsl()
     photo.saturation(0.5)
     output_photo = photo.hsl_to_rgb(photo.photo_hsl)

@@ -11,11 +11,11 @@ def test_rgb_hsl_rgb_convert():
 
     all_rgb_array = np.stack([r, g, b], axis=-1).reshape(4096, 4096, 3)
 
-    photo = Photo.photo_read()
+    photo = Photo()
     photo.photo_rgb = all_rgb_array
     photo.rgb_to_hsl()
-    photo.hsl_to_rgb()
+    result = photo.hsl_to_rgb(photo.photo_hsl)
 
-    diff = photo.photo_rgb.astype(float) - photo.photo_rgb_output.astype(float)
+    diff = photo.photo_rgb.astype(float) - result.astype(float)
     zero = np.zeros_like(diff)
     np.testing.assert_array_equal(diff,zero)
