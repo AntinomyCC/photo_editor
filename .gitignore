@@ -1,0 +1,11 @@
+# Python bytecode cache — appears in any imported package/test directory
+__pycache__/
+
+# Pytest cache
+.pytest_cache/
+
+# VS Code editor settings (personal, machine-specific)
+.vscode/
+
+# macOS Finder metadata
+.DS_Store
