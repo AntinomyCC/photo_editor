@@ -5,7 +5,8 @@ def saturation_tuner(s_channel, t):
     # Use -t to align the direction of t slide and saturation change.
     return s_channel**np.exp(-t)
 
-
+def contrast_tuner(l_channel, t):
+    return np.clip((t*(l_channel-0.5)+0.5),0.0,1.0)
 
 def hsl_to_rgb(photo_hsl):
     # Switch a hsl photo stored in 3d np array to rgb photo.
