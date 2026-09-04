@@ -1,9 +1,14 @@
 import numpy as np
 
-def saturation_tuner(s_channel, t):
+def saturation_tuner(s_channel, t): 
+    # Use the exponential function y = x^(exp(-t)) to create a projection for S from [0,1] to [0,1].
+    # Use -t to align the direction of t slide and saturation change.
     return s_channel**np.exp(-t)
 
+
+
 def hsl_to_rgb(photo_hsl):
+    # Switch a hsl photo stored in 3d np array to rgb photo.
     photo_rgb_output = np.zeros(photo_hsl.shape)
 
     c_hsl = (1.0 - np.abs(2.0 * photo_hsl[:,:,2] - 1.0)) * photo_hsl[:,:,1]
@@ -34,10 +39,7 @@ def hsl_to_rgb(photo_hsl):
     return photo_rgb_output
 
 def rgb_to_hsl(photo_rgb):
-   # if self.photo_rgb is None:
-    #    self.photo_read()          
-    #photo_rgb = self.photo_rgb
-
+    # Switch a hsl photo stored in 3d np array to rgb photo.
     photo_rgb_normalized = photo_rgb/255.0
     photo_hsl = np.zeros(photo_rgb.shape)
 

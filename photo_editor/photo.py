@@ -21,8 +21,6 @@ class Photo:
         pass
 
     def rgb_to_hsl(self):
-        #if self.photo_rgb is None:
-        #   self.photo_read()
         self.photo_hsl = rgb_to_hsl(self.photo_rgb)
 
     def hsl_to_rgb(self,photo_hsl):
