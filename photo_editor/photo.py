@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from photo_editor.color_functions import rgb_to_hsl, hsl_to_rgb, saturation_tuner
+from photo_editor.color_functions import rgb_to_hsl, hsl_to_rgb, saturation_tuner,contrast_tuner
 from photo_editor.io_functions import photo_path,photo_read,photo_read_HEIC 
 
 
@@ -11,7 +11,7 @@ class Photo:
         self.photo_rgb = None
         self.photo_hsl = None
         self.photo_rgb_output = None
-        self.photo_s_adjusted = None
+        self.photo_adjusted = None
 
     def photo_read(self):
         self.path = photo_path()
@@ -31,24 +31,23 @@ class Photo:
     def saturation(self,t):
         if self.photo_hsl is None:
             raise RuntimeError("No photo is currently loaded as hsl format")
-        self.photo_s_adjusted = self.photo_hsl.copy()
-        self.photo_s_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],t)
+        self.photo_adjusted = self.photo_hsl.copy()
+        self.photo_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],t)
+
+    def contrast(self,t):
+        if self.photo_hsl is None:
+            raise RuntimeError("No photo is currently loaded as hsl format")
+        self.photo_adjusted = self.photo_hsl.copy()
+        self.photo_adjusted[:,:,2] = contrast_tuner(self.photo_hsl[:,:,2],t)
 
 def main():
     photo = Photo()
     photo.photo_read()
     photo.rgb_to_hsl()
-    photo.saturation(0.5)
-    output_photo = photo.hsl_to_rgb(photo.photo_hsl)
-    adjusted_photo = photo.hsl_to_rgb(photo.photo_s_adjusted)
-   # photo_MSE = np.square(photo.photo_rgb - photo.photo_rgb_output)
-    #print(photo.photo_rgb.dtype, photo.photo_rgb_output.dtype)
-    diff = photo.photo_rgb.astype(float) - output_photo.astype(float)
-    print(diff.min(), diff.max())  
-    print(np.mean(diff**2))  
-    print(id(photo.photo_rgb), id(output_photo))
-    print(np.sum(diff != 0)) 
-    print(np.unique(diff))    
+   # photo.saturation(0.5)
+    photo.contrast(5)
+    adjusted_photo = photo.hsl_to_rgb(photo.photo_adjusted)
+
     plt.imshow(adjusted_photo)
     plt.show()
 
