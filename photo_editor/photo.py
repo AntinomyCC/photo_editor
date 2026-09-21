@@ -31,18 +31,6 @@ class Photo:
             raise RuntimeError("No photo is loaded")
         return hsl_to_rgb(photo_hsl) # In order to avoid the adjusted rgb output cover the original rgb output. One can adjust it when it is used.
 
-    #def saturation(self,t):
-    #    if self.photo_hsl is None:
-    #       raise RuntimeError("No photo is currently loaded as hsl format")
-    #    self.photo_adjusted = self.photo_adjusted.copy()
-    #    self.photo_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],t)
-
-    #def contrast(self,t):
-    #    if self.photo_hsl is None:
-    #        raise RuntimeError("No photo is currently loaded as hsl format")
-    #    self.photo_adjusted = self.photo_adjusted.copy()
-    #    self.photo_adjusted[:,:,2] = contrast_tuner(self.photo_hsl[:,:,2],t)
-
     def saturation(self,t):
         self.params["saturation"] = t
         self._recompute()
