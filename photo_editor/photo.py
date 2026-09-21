@@ -12,6 +12,8 @@ class Photo:
         self.photo_hsl = None
         self.photo_rgb_output = None
         self.photo_adjusted = None
+        self.params = {"saturation":0,
+                       "contrast":1}
 
     def photo_read(self):
         self.path = photo_path()
@@ -22,30 +24,45 @@ class Photo:
 
     def rgb_to_hsl(self):
         self.photo_hsl = rgb_to_hsl(self.photo_rgb)
+        self.photo_adjusted = self.photo_hsl.copy()
 
     def hsl_to_rgb(self,photo_hsl):
         if photo_hsl is None:
             raise RuntimeError("No photo is loaded")
         return hsl_to_rgb(photo_hsl) # In order to avoid the adjusted rgb output cover the original rgb output. One can adjust it when it is used.
 
+    #def saturation(self,t):
+    #    if self.photo_hsl is None:
+    #       raise RuntimeError("No photo is currently loaded as hsl format")
+    #    self.photo_adjusted = self.photo_adjusted.copy()
+    #    self.photo_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],t)
+
+    #def contrast(self,t):
+    #    if self.photo_hsl is None:
+    #        raise RuntimeError("No photo is currently loaded as hsl format")
+    #    self.photo_adjusted = self.photo_adjusted.copy()
+    #    self.photo_adjusted[:,:,2] = contrast_tuner(self.photo_hsl[:,:,2],t)
+
     def saturation(self,t):
-        if self.photo_hsl is None:
-            raise RuntimeError("No photo is currently loaded as hsl format")
-        self.photo_adjusted = self.photo_hsl.copy()
-        self.photo_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],t)
+        self.params["saturation"] = t
+        self._recompute()
 
     def contrast(self,t):
+        self.params["contrast"] = t
+        self._recompute()
+
+    def _recompute(self):
         if self.photo_hsl is None:
-            raise RuntimeError("No photo is currently loaded as hsl format")
-        self.photo_adjusted = self.photo_hsl.copy()
-        self.photo_adjusted[:,:,2] = contrast_tuner(self.photo_hsl[:,:,2],t)
+            raise RuntimeError("No photo is currently loaded")
+        self.photo_adjusted[:,:,1] = saturation_tuner(self.photo_hsl[:,:,1],self.params["saturation"])
+        self.photo_adjusted[:,:,2] = contrast_tuner(self.photo_hsl[:,:,2],self.params["contrast"])
 
 def main():
     photo = Photo()
     photo.photo_read()
     photo.rgb_to_hsl()
-   # photo.saturation(0.5)
-    photo.contrast(5)
+    photo.saturation(-50)
+    photo.contrast(20)
     adjusted_photo = photo.hsl_to_rgb(photo.photo_adjusted)
 
     plt.imshow(adjusted_photo)
